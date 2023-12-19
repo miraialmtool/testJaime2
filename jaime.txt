@@ -1,1 +1,105 @@
-ojete
+spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+      fail-on-empty-beans: false
+    deserialization:
+      fail-on-unknown-properties: false
+    date-format: yyyy-MM-dd'T'hh:mm:ss
+  datasource:
+    hikari:
+      maximum-pool-size: 3
+      max-lifetime: 400000
+      connection-timeout: 60000
+  jpa:
+    database: postgresql
+    properties:
+      hibernate:
+        temp.use_jdbc_metadata_defaults: false
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+  security:
+    oauth2:
+      resourceserver:
+        opaque-token:
+          introspection-uri: https://auth2.${PROFILE_VALUE}.miraialmtool.com//oauth2/introspect
+          client-id: oidc-client
+          client-secret: secret
+
+  sql:
+    init:
+      platform: postgres
+  threads:
+    virtual:
+      enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 3600000
+
+ribbon:
+  ReadTimeout: 3600000
+  ConnectTimeout: 3600000
+
+mat:
+  saml:
+    route: https://auth.${PROFILE_VALUE}.miraialmtool.com/login/saml2/sso/
+  admin:
+    auth:
+      list:
+        reports: BALANCE, INTEREST, LIQUIDITY, SENSITIVITY, CURVES
+        designerReports: VIEW_DESIGN_REPORT, EDIT_DESIGN_REPORT
+        parametrization: SCENARIOS, MARKET_DATA, PRODUCTS, BEHAVIOUR, DINAMIC_BALANCE, TEMP_STRUCTURE, CURRENCY, THRESHOLD, BUSSINES_UNIT, STOCHASTIC, VAREAR
+        audit: PROCCESS_MONITOR, DATA_QUALITY, ATHENA, TRACEABILITY
+        manualEntries: ADJUSTMENTS
+        security: MANAGE_SECURITY
+        regulation: REGULATORY_BALANCE, REGULATION_PRODUCTS, REGULATION_MAPPING, REGULATORY_REPORTS, REGULATORY_SCENARIOS, REGULATORY_COMPARISON
+        visor: READ_ONLY
+        liquidityEba: LCR_EBA, AMM_EBA, NSFR_EBA, ASSET_ENCUMBRANCE_EBA
+        liquidityBis: NSFR_BIS, LCR_BIS
+        interestBde: RI1, RI2, RI3
+        interestSte: IRRBB_STE, IRRBB_ADDITIONAL_STE, IRRBB_STE_ASSUMPTIONS
+        ftp: COMPONENTS_ADMIN, MODELS, PRODUCTS_MAPPING
+  resource:
+    server:
+      enabled: true
+  excluded:
+    users:
+      - BackInternal
+      - internal-bd
+
+aws:
+  s3:
+    enabled: false
+  region: eu-west-1
+
+amazon:
+  sqs:
+    notification-queue: notification-queue
+
+cloud:
+  aws:
+    stack:
+      auto: false
+
+
+springdoc:
+  swagger-ui:
+    operations-sorter: method
+
+
+logging:
+  level:
+    com.miraiadvisory.mat.modelmapper.config: ERROR
+    org.springframework.orm.jpa: WARN
+    org.hibernate: WARN
+    org.springframework.context.support.PostProcessorRegistrationDelegate: WARN
